@@ -1,0 +1,2 @@
+10.0.1.54  ansible_ssh_private_key_file='/home/ubuntu/myecinstance.pem' ansible_ssh_user=ubuntu
+10.0.2.181 ansible_ssh_private_key_file='/home/ubuntu/myecinstance.pem' ansible_ssh_user=ubuntu

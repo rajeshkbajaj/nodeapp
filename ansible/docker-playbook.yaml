@@ -1,0 +1,36 @@
+---
+- hosts: all
+  remote_user: ubuntu
+  become: true
+  tasks:
+      - name: install pre-reqs for docker
+        apt:
+            name: "{{item}}"
+            state: present
+            update_cache: yes
+        loop:
+            - apt-transport-https
+            - ca-certificates
+            - curl
+            - gnupg-agent
+            - software-properties-common
+      - name: add gpg signing key
+        apt_key:
+            url: https://download.docker.com/linux/ubuntu/gpg
+            state: present
+      - name: add repository
+        apt_repository:
+            repo:  deb https://download.docker.com/linux/ubuntu bionic stable
+            state: present
+            update_cache: true
+      - name: install docker
+        apt:
+            name: "{{item}}"
+            state: latest
+            update_cache: yes
+        loop:
+            - docker-ce
+            - docker-ce-cli
+            - containerd.io
+      - name: add docker user to sudo group
+        command: usermod ubuntu -aG docker

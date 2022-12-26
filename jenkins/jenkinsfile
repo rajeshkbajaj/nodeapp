@@ -1,0 +1,30 @@
+pipeline {
+  agent {label 'appserver'}
+  environment {
+	    AWS_ACCOUNT_ID="247434585159"
+     	AWS_DEFAULT_REGION = "us-east-1"
+    }
+  
+  stages {
+    stage('cloning the node app from github repository') {
+      steps {
+          git branch:'master', url: 'https://github.com/rajeshkbajaj/nodeapp.git'
+
+      }
+    }
+    stage('build and push image to ecr'){
+            steps{
+                sh '''docker build -t node-app .
+                docker tag node-app:latest 247434585159.dkr.ecr.us-east-1.amazonaws.com/node-app:latest
+                docker push 247434585159.dkr.ecr.us-east-1.amazonaws.com/node-app:latest'''
+            }
+        }
+
+     stage('run container on app server'){
+         steps{
+             sh '''docker run -d -p 8080:8080 247434585159.dkr.ecr.us-east-1.amazonaws.com/node-app:latest'''
+          }
+      }
+    
+    }
+}
